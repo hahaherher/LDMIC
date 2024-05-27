@@ -23,7 +23,7 @@ import wandb
 import os
 from tqdm import tqdm
 from pytorch_msssim import ms_ssim
-os.environ["WANDB_API_KEY"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # write your own wandb id
+# os.environ["WANDB_API_KEY"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # write your own wandb id
 
 def compute_aux_loss(aux_list: List, backward=False):
     aux_loss_sum = 0
@@ -199,7 +199,7 @@ def test_epoch(epoch, val_dataloader, model, criterion, args):
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="Example training script.")
     parser.add_argument(
-        "-d", "--dataset", type=str, default='../dataset/Instereo2K/', help="Training dataset"
+        "-d", "--dataset", type=str, default='../dataset/Instereo2K-part5-part6-test', help="Training dataset"
     )
     parser.add_argument(
         "--data-name", type=str, default='instereo2k', help="Training dataset"
@@ -323,7 +323,8 @@ def main(argv):
         f.write(args_text)
 
     project_name = "DSIC_" + args.data_name
-    wandb.init(project=project_name, name=display_name, tags=[tags],) #notes="lmbda{}".format(args.lmbda))
+    print(project_name, display_name, tags)
+    wandb.init(project=project_name, name=display_name, tags=[tags], ) #notes="lmbda{}".format(args.lmbda))
     wandb.watch_called = False  # Re-run the model without restarting the runtime, unnecessary after our next release
     wandb.config.update(args) # config is a variable that holds and saves hyper parameters and inputs
   
