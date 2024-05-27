@@ -8,7 +8,7 @@ from compressai.ops import ste_round
 from compressai.layers import ResidualBlock, GDN, MaskedConv2d, conv3x3, ResidualBlockWithStride
 from deepspeed.profiling.flops_profiler import get_model_profile
 import torch.nn.functional as F
-from entropy_model import Hyperprior, CheckMaskedConv2d
+from models.entropy_model import Hyperprior, CheckMaskedConv2d
 from torch.autograd import Variable
 from math import exp
 import os

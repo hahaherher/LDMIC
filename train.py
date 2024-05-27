@@ -199,10 +199,10 @@ def test_epoch(epoch, val_dataloader, model, criterion, args):
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="Example training script.")
     parser.add_argument(
-        "-d", "--dataset", type=str, default='./datasets/Instereo2K/', help="Training dataset"
+        "-d", "--dataset", type=str, default='../dataset/Instereo2K/', help="Training dataset"
     )
     parser.add_argument(
-        "--data-name", type=str, default='instereo2K', help="Training dataset"
+        "--data-name", type=str, default='instereo2k', help="Training dataset"
     )
     parser.add_argument(
         "--model-name", type=str, default='LDMIC', help="Training dataset"
@@ -307,12 +307,12 @@ def main(argv):
         print("Loading model: ", args.i_model_path)
         checkpoint = torch.load(args.i_model_path, map_location=device)
         net.load_state_dict(checkpoint["state_dict"])   
-            last_epoch = checkpoint["epoch"] + 1
-            optimizer.load_state_dict(checkpoint["optimizer"])
-            aux_optimizer.load_state_dict(checkpoint["aux_optimizer"])
-            lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-            best_b_model_path = os.path.join(os.path.split(args.i_model_path)[0], 'ckpt.best.pth.tar')
-            best_loss = torch.load(best_b_model_path)["loss"]
+        last_epoch = checkpoint["epoch"] + 1
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        aux_optimizer.load_state_dict(checkpoint["aux_optimizer"])
+        lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
+        best_b_model_path = os.path.join(os.path.split(args.i_model_path)[0], 'ckpt.best.pth.tar')
+        best_loss = torch.load(best_b_model_path)["loss"]
 
 
     log_dir, experiment_id = get_output_folder('./checkpoints/{}/{}/{}/lamda{}/'.format(args.data_name, args.metric, args.model_name, int(args.lmbda)), 'train')
