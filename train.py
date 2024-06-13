@@ -226,7 +226,7 @@ def parse_args(argv):
         "--batch-size", type=int, default=16, help="Batch size (default: %(default)s)"
     )
     parser.add_argument(
-        "--epochs", type=int, default=10, help="number of training epochs (default: %(default)s)" #400
+        "--epochs", type=int, default=20, help="number of training epochs (default: %(default)s)" #400
     )
     parser.add_argument(
         "--test-batch-size",

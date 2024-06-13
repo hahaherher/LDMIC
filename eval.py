@@ -14,6 +14,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import cv2
 
 from PIL import Image
 from torchvision import transforms
@@ -157,11 +158,17 @@ def eval_model(IFrameCompressor:nn.Module, left_filepaths: Path, right_filepaths
             dec_time = time.time() - start
             
             x_left_rec, x_right_rec = out_dec["x_hat"][0], out_dec["x_hat"][1]
-            # print(x_left_rec.shape, x_right_rec.shape)
+            print(x_left_rec.shape, x_right_rec.shape)
             
             # write reconstructec image
-            # output_dir = "./output/stereo2k_0613/"
-            # cv2.imwrite(f"{output_dir}/{left_filepaths[i]}.basename()-rec.png", x_left_rec[0].cpu().numpy().transpose(1, 2, 0) * 255)
+            output_dir = "./output/stereo2k_0613/"
+            os.makedirs(f"{output_dir}/{str(left_filepaths[i])[-15:-8]}", exist_ok=True)
+
+            # print(x_left_rec[0].cpu().numpy().transpose(1, 2, 0).shape)
+            cv2.imwrite(f"{output_dir}/{str(left_filepaths[i])[-15:-4]}-rec.png", x_left_rec[0].cpu().numpy().transpose(1, 2, 0) * 255)
+            # print(x_left_rec[0].cpu().numpy().transpose(1, 2, 0))
+            print(x_left_rec)
+            # print(x_left)
             # cv2.imwrite(f"{output_dir}/{right_filepaths[i].basename()}-rec.png", x_right_rec[0].cpu().numpy().transpose(1, 2, 0) * 255)
             
             metrics = {}
