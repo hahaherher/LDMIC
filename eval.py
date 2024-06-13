@@ -132,6 +132,7 @@ def eval_model(IFrameCompressor:nn.Module, left_filepaths: Path, right_filepaths
     results = defaultdict(list)
     if args["crop"]:
         crop_transform = CropCityscapesArtefacts() if args["data_name"] == "cityscapes" else MinimalCrop(min_div=64)
+        # print("crop")
     else:
         crop_transform = None
 
@@ -150,13 +151,19 @@ def eval_model(IFrameCompressor:nn.Module, left_filepaths: Path, right_filepaths
             start = time.time()
             out_enc_right = IFrameCompressor.encode(x_right)
             enc_right_time = time.time() - start
-
+            # print(out_enc_left["shape"], out_enc_right["shape"])
             start = time.time()
             out_dec = IFrameCompressor.decompress(out_enc_left, out_enc_right)
             dec_time = time.time() - start
-
+            
             x_left_rec, x_right_rec = out_dec["x_hat"][0], out_dec["x_hat"][1]
-
+            # print(x_left_rec.shape, x_right_rec.shape)
+            
+            # write reconstructec image
+            # output_dir = "./output/stereo2k_0613/"
+            # cv2.imwrite(f"{output_dir}/{left_filepaths[i]}.basename()-rec.png", x_left_rec[0].cpu().numpy().transpose(1, 2, 0) * 255)
+            # cv2.imwrite(f"{output_dir}/{right_filepaths[i].basename()}-rec.png", x_right_rec[0].cpu().numpy().transpose(1, 2, 0) * 255)
+            
             metrics = {}
             metrics["left-psnr-float"], metrics["left-ms-ssim-float"] = compute_metrics_for_frame(
                 x_left, x_left_rec, device, max_val)
@@ -278,8 +285,8 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("-d", "--dataset", type=str, required=True, help="sequences directory")
-    parser.add_argument("--data-name", type=str, required=True, help="sequences directory")
-    parser.add_argument("--output", type=str, help="output directory")
+    parser.add_argument("--data-name", type=str, default="instereo2k", help="dataset name (e.g. cityscapes, instereo2k)")
+    parser.add_argument("--output", type=str, default="./output/stereo2k_0613", help="output directory")
     parser.add_argument(
         "-im",
         "--IFrameModel",
@@ -288,9 +295,9 @@ def create_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument("-iq", "--IFrame_quality", type=int, default=4, help='Model quality')
-    parser.add_argument("--i_model_path", type=str, help="Path to a checkpoint")
-    parser.add_argument("--crop", action="store_true", help="use crop")
-    parser.add_argument("--cuda", action="store_true", help="use cuda")
+    parser.add_argument("--i_model_path", type=str, default="/home/aliceyu/LDMIC/checkpoints/instereo2k/mse/LDMIC/lamda20480613/train-run4/ckpt.pth.tar", help="Path to a checkpoint")
+    parser.add_argument("--crop", action="store_true", default=True, help="use crop")
+    parser.add_argument("--cuda", action="store_true", default=True, help="use cuda")
     parser.add_argument("--half", action="store_true", help="use AMP")
     parser.add_argument(
         "--entropy-estimation",

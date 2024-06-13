@@ -219,14 +219,14 @@ def parse_args(argv):
         "--lambda",
         dest="lmbda",
         type=float,
-        default=2048,
+        default=2048_0613,
         help="Bit-rate distortion parameter (default: %(default)s)",
     )
     parser.add_argument(
         "--batch-size", type=int, default=16, help="Batch size (default: %(default)s)"
     )
     parser.add_argument(
-        "--epochs", type=int, default=400, help="number of training epochs (default: %(default)s)"
+        "--epochs", type=int, default=10, help="number of training epochs (default: %(default)s)" #400
     )
     parser.add_argument(
         "--test-batch-size",
@@ -243,7 +243,7 @@ def parse_args(argv):
     )
     parser.add_argument("--cuda", action="store_true", help="Use cuda")
     parser.add_argument(
-        "--save", action="store_true", help="Save model to disk"
+        "--save", action="store_true", default=True, help="Save model to disk"
     )
     parser.add_argument(
         "--resize", action="store_true", help="training use resize or randomcrop"

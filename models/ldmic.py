@@ -284,15 +284,18 @@ class LDMIC(nn.Module):
     def encode(self, x):
         y = self.encoder(x)
         params, z_hat, z_strings = self.hyperprior.compress(y)
-        s = 4  # scaling factor between z and y
-        kernel_size = 5  # context prediction kernel size
+        s = 4  # scaling factor between z and y 
+        kernel_size = 5  # context prediction kernel size 
         padding = (kernel_size - 1) // 2
-
+        
         y_height = z_hat.size(2) * s
         y_width = z_hat.size(3) * s
-
+        # print(y_height, y_width)
         y_hat = F.pad(y, (padding, padding, padding, padding))
-
+        # print(y_hat.size())
+        y_height = y_hat.size(2) - 5
+        y_width = y_hat.size(3) - 5
+        
         y_strings = []
         for i in range(y.size(0)):
             string = self._compress_ar(
@@ -319,9 +322,11 @@ class LDMIC(nn.Module):
         # Warning, this is slow...
         # TODO: profile the calls to the bindings...
         masked_weight = self.context_prediction.weight * self.context_prediction.mask
+
         for h in range(height):
             for w in range(width):
                 y_crop = y_hat[:, :, h : h + kernel_size, w : w + kernel_size]
+                # print(y_crop.shape)
                 ctx_p = F.conv2d(
                     y_crop,
                     masked_weight,
